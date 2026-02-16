@@ -70,6 +70,31 @@ body {
     background-clip: text;
 }
 
+#views {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+
+    color: rgba(255,255,255,0.85);
+
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-radius: 14px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.18),
+        0 10px 30px rgba(0,0,0,0.45);
+
+    z-index: 10;
+    pointer-events: none;
+}
+
 .container {
     position: relative;
     z-index: 1;
@@ -84,14 +109,42 @@ body {
     height: 160px;
     margin: 0 auto 14px;
     border-radius: 50%;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+}
+
+.avatar-container::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    z-index: -1;
+
+    background: radial-gradient(
+        circle,
+        rgba(255,255,255,0.45) 0%,
+        rgba(255,255,255,0.25) 35%,
+        rgba(255,255,255,0.12) 55%,
+        rgba(255,255,255,0.05) 70%,
+        transparent 85%
+    );
+
+    filter: blur(18px);
+    opacity: 0.9;
 }
 
 .avatar {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 25px rgba(255,255,255,0.35),
+        0 0 60px rgba(255,255,255,0.15);
 }
+
+
 
 .nickname {
     font-size: 32px;
@@ -234,7 +287,7 @@ a:active {
 </div>
 
 <div class="container">
-
+    <div id="views">Views: </div>
     <div class="avatar-container">
         <img src="avatar.png" class="avatar">
     </div>
@@ -367,6 +420,50 @@ setInterval(() => {
     }
 }, 1000);
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getFirestore, doc, updateDoc, increment, getDoc }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCg1RiLTsrvsHc1ax0oyjUeRH-RvTNHzkM",
+  authDomain: "wiskas.firebaseapp.com",
+  projectId: "wiskas",
+  storageBucket: "wiskas.firebasestorage.app",
+  messagingSenderId: "168046348967",
+  appId: "1:168046348967:web:618ed62b398042861ca982",
+  measurementId: "G-HQK41NQLVK"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const viewsRef = doc(db, "stats", "bio");
+
+async function updateViews() {
+  try {
+    const alreadyCounted = localStorage.getItem("bio_view_counted");
+
+    if (!alreadyCounted) {
+      await updateDoc(viewsRef, {
+        views: increment(1)
+      });
+
+      localStorage.setItem("bio_view_counted", "true");
+    }
+
+    const snap = await getDoc(viewsRef);
+    document.getElementById("views").textContent =
+      "Views: " + snap.data().views;
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+updateViews();
+</script>
+
 
 </body>
 </html>
