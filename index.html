@@ -899,13 +899,8 @@ setInterval(() => {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  increment,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot }
+from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCg1RiLTsrvsHc1ax0oyjUeRH-RvTNHzkM",
@@ -922,69 +917,25 @@ const db = getFirestore(app);
 
 const bioRef = doc(db, "stats", "bio");
 
-/* ----------- VIEWS ----------- */
+onSnapshot(bioRef, snap => {
+    if (!snap.exists()) return;
 
-async function incrementViewOnce() {
-  const alreadyCounted = localStorage.getItem("bio_view_counted");
-  if (alreadyCounted) return;
+    const data = snap.data();
 
-  await setDoc(
-    bioRef,
-    { views: increment(1) },
-    { merge: true }
-  );
+    document.getElementById("views").textContent =
+        data.views || 0;
 
-  localStorage.setItem("bio_view_counted", "true");
-}
+    document.getElementById("clicks_total").textContent =
+        data.clicks_total || 0;
 
-incrementViewOnce();
+    document.getElementById("rivalvisual").textContent =
+        data.rivalclicks || 0;
 
-onSnapshot(bioRef, snapshot => {
-  if (!snapshot.exists()) return;
-
-  const data = snapshot.data();
-  document.getElementById("views").textContent =
-    "Views: " + (data.views || 0);
-});
-
-/* ----------- CLICKS ----------- */
-
-document.querySelectorAll(".link-item").forEach(link => {
-  link.addEventListener("click", async (e) => {
-    e.preventDefault();
-
-    const id = link.dataset.id;
-    const url = link.href;
-
-    if (!id) {
-      window.location.href = url;
-      return;
-    }
-
-    const linkRef = doc(db, "stats", "bio", "links", id);
-
-    try {
-      await setDoc(
-        bioRef,
-        { clicks_total: increment(1) },
-        { merge: true }
-      );
-
-      await setDoc(
-        linkRef,
-        { clicks: increment(1) },
-        { merge: true }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-
-    if (url && url !== "#") {
-      window.open(url, "_blank");
-    }
-  });
+    document.getElementById("soupvisuals").textContent =
+        data.soupclicks || 0;
 });
 </script>
+
 
 </body>
 </html>
