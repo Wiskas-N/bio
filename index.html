@@ -302,15 +302,15 @@ a:active {
     </div>
 
     <div class="links">
-        <a class="link-item" href="https://t.me/rivalvisual">
+        <a class="link-item" href="https://t.me/rivalvisual" data-id="rivalvisual">
             <div class="link-title">Rival Visuals</div>
             <div class="link-url">The best visuals for minecraft 1.21.4 and 1.21.8</div>
         </a>
-        <a class="link-item" href="https://t.me/soupvisuals">
+        <a class="link-item" href="https://t.me/soupvisuals" data-id="soupvisuals">
             <div class="link-title">Soup Visuals</div>
             <div class="link-url">The best visuals for minecraft 1.21.4</div>
         </a>
-        <a class="link-item" href="#">
+        <a class="link-item" href="#" data-id="soon">
             <div class="link-title">Soon..</div>
             <div class="link-url">...</div>
         </a>
@@ -423,8 +423,14 @@ setInterval(() => {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getFirestore, doc, updateDoc, increment, onSnapshot }
-from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  updateDoc,
+  increment,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCg1RiLTsrvsHc1ax0oyjUeRH-RvTNHzkM",
@@ -438,26 +444,61 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const viewsRef = doc(db, "stats", "bio");
 
-async function incrementIfNeeded() {
+const bioRef = doc(db, "stats", "bio");
+
+async function incrementViewOnce() {
   const alreadyCounted = localStorage.getItem("bio_view_counted");
 
-  if (!alreadyCounted) {
-    await updateDoc(viewsRef, {
-      views: increment(1)
-    });
-    localStorage.setItem("bio_view_counted", "true");
-  }
+  if (alreadyCounted) return;
+
+  await setDoc(
+    bioRef,
+    {
+      views: increment(1),
+      clicks_total: increment(0)
+    },
+    { merge: true }
+  );
+
+  localStorage.setItem("bio_view_counted", "true");
 }
 
-incrementIfNeeded();
+incrementViewOnce();
 
-onSnapshot(viewsRef, (snapshot) => {
-  if (snapshot.exists()) {
-    document.getElementById("views").textContent =
-      "Views: " + snapshot.data().views;
-  }
+onSnapshot(bioRef, snapshot => {
+  if (!snapshot.exists()) return;
+
+  const data = snapshot.data();
+  document.getElementById("views").textContent =
+    "Views: " + (data.views || 0);
+});
+
+document.querySelectorAll(".link-item").forEach(link => {
+  link.addEventListener("click", async () => {
+
+    const id = link.dataset.id;
+    if (!id) return;
+
+    const linkRef = doc(db, "stats", "bio", "links", id);
+
+    try {
+      await setDoc(
+        bioRef,
+        { clicks_total: increment(1) },
+        { merge: true }
+      );
+
+      await setDoc(
+        linkRef,
+        { clicks: increment(1) },
+        { merge: true }
+      );
+
+    } catch (e) {
+      console.error(e);
+    }
+  });
 });
 </script>
 
