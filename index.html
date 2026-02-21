@@ -26,7 +26,6 @@ body {
     overflow: hidden;
     min-height: 100svh;
     min-height: 100vh;
-
 }
 
 .background {
@@ -74,23 +73,17 @@ body {
     position: fixed;
     right: 20px;
     bottom: 20px;
-
     padding: 10px 16px;
     font-size: 13px;
     font-weight: 500;
-
     color: rgba(255,255,255,0.85);
-
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-
     border-radius: 14px;
-
     box-shadow:
         inset 0 0 0 1px rgba(255,255,255,0.18),
         0 10px 30px rgba(0,0,0,0.45);
-
     z-index: 10;
     pointer-events: none;
 }
@@ -104,90 +97,6 @@ body {
     text-align: center;
 }
 
-.avatar-container {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 14px;
-    border-radius: 50%;
-    overflow: visible;
-    position: relative;
-}
-
-.avatar-container::before {
-    content: "";
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    z-index: -1;
-
-    background: radial-gradient(
-        circle,
-        rgba(255,255,255,0.45) 0%,
-        rgba(255,255,255,0.25) 35%,
-        rgba(255,255,255,0.12) 55%,
-        rgba(255,255,255,0.05) 70%,
-        transparent 85%
-    );
-
-    filter: blur(18px);
-    opacity: 0.9;
-}
-
-.avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-
-    box-shadow:
-        0 0 25px rgba(255,255,255,0.35),
-        0 0 60px rgba(255,255,255,0.15);
-}
-
-
-
-.nickname {
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 10px;
-    text-shadow: 0 0 18px rgba(255,255,255,.4);
-}
-
-a,
-a:hover,
-a:visited,
-a:active {
-    text-decoration: none;
-    color: inherit;
-}
-
-.description {
-    font-size: 13px;
-    opacity: .6;
-    margin-bottom: 22px;
-}
-
-.socials {
-    display: flex;
-    justify-content: center;
-    gap: 18px;
-    font-size: 28px;
-    margin-bottom: 28px;
-}
-
-.socials a {
-    transition:
-        transform .45s cubic-bezier(.16,1,.3,1),
-        box-shadow .45s cubic-bezier(.16,1,.3,1),
-        background .45s ease;
-}
-
-.socials a:hover {
-    transform: translateY(-1.5px);
-}
-
-
-
 .links {
     display: flex;
     flex-direction: column;
@@ -197,22 +106,17 @@ a:active {
 .link-item {
     padding: 14px 18px;
     border-radius: 14px;
-
     background: rgba(255, 255, 255, 0);
-
     box-shadow:
         inset 0 0 0 1px rgba(255,255,255,0.18),
         0 8px 24px rgba(0,0,0,0.35);
-
     text-decoration: none;
     color: #fff;
-
     transition:
         transform .25s ease,
         box-shadow .25s ease,
         background .25s ease;
 }
-
 
 .link-item:hover {
     transform: translateY(-2px);
@@ -221,7 +125,6 @@ a:active {
         inset 0 0 0 1px rgba(255,255,255,0.25),
         0 14px 36px rgba(0,0,0,0.45);
 }
-
 
 .link-title {
     font-weight: 600;
@@ -235,27 +138,10 @@ a:active {
 }
 
 @media (max-width: 480px) {
-    .avatar-container {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 10px;
-    }
-
-    .nickname {
-        font-size: 26px;
-    }
-
-    .description {
-        font-size: 12px;
-        margin-bottom: 18px;
-    }
-
     .container {
         padding: 20px 18px 16px;
     }
-}
 
-@media (max-width: 480px) {
     .link-item {
         padding: 16px 18px;
         border-radius: 16px;
@@ -269,8 +155,6 @@ a:active {
         font-size: 12px;
     }
 }
-
-
 </style>
 </head>
 
@@ -278,7 +162,7 @@ a:active {
 
 <div class="background">
     <video id="bg-video" muted playsinline>
-        <source src="background.mp4" type="video/mp4">
+        <source src="БАРБИ ГЁРЛ)))))))))).mp4" type="video/mp4">
     </video>
 </div>
 
@@ -288,40 +172,29 @@ a:active {
 
 <div class="container">
     <div id="views">Views: </div>
-    <div class="avatar-container">
-        <img src="avatar.png" class="avatar">
-    </div>
-
-    <div class="nickname">wiskas</div>
-
-    <div class="description">web-designer</div>
-
-    <div class="socials">
-        <a href="https://discord.com/users/1315927053559791637"><i class="fa-brands fa-discord"></i></a>
-        <a href="https://t.me/wiskas_n"><i class="fa-brands fa-telegram"></i></a>
-    </div>
 
     <div class="links">
         <a class="link-item" href="https://t.me/rivalvisual" data-id="rivalclicks">
             <div class="link-title">Rival Visuals</div>
             <div class="link-url">The best visuals for minecraft 1.21.4 and 1.21.8</div>
         </a>
+
         <a class="link-item" href="https://t.me/soupvisuals" data-id="soupclicks">
             <div class="link-title">Soup Visuals</div>
             <div class="link-url">The best visuals for minecraft 1.21.4</div>
         </a>
+
         <a class="link-item" href="https://t.me/paradoxloader">
             <div class="link-title">Paradox Loader</div>
             <div class="link-url">The best hacks loader for Minecraft 1.16.5 - 1.21.11</div>
         </a>
+
         <a class="link-item" href="#">
             <div class="link-title">Soon..</div>
             <div class="link-url">...</div>
         </a>
     </div>
-
 </div>
-
 <script>
 const startScreen = document.getElementById('start-screen');
 const video = document.getElementById('bg-video');
@@ -455,7 +328,7 @@ document.querySelectorAll(".link-item").forEach(link => {
   });
 });
 
-</script>
+</script> 
 
 
 
