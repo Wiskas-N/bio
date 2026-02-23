@@ -33,7 +33,6 @@ body {
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(10, 10, 14, 0.65);
     z-index: 0;
 }
 
@@ -162,6 +161,7 @@ body {
     }
 
 }
+
 
 
 
