@@ -31,7 +31,7 @@
             <img src="avatar.png" alt="avatar" class="avatar-img">
         </div>
         <h1>Wiskas</h1>
-        <p class="bio-desc">Вам картошку фри или гамбургер?</p>
+        <p class="bio-desc"> Вам <span class="food-trigger" data-food="fries">картошку фри</span> или <span class="food-trigger" data-food="burger">гамбургер</span>? </p>
         <p class="bio-location">
             <i class="fa-solid fa-location-dot"></i> Подвал
         </p>
@@ -62,7 +62,7 @@
             </a>
         </div>
     </div>
-
+    <div id="easter-egg" class="easter-egg"> <img id="easter-img" src="" alt="food"> </div>
     <div class="views-fixed">
         <i class="fa-solid fa-eye"></i>
         <span id="views">0</span>
@@ -99,6 +99,8 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 </script>
+
+<script> const easter = document.getElementById('easter-egg'); const easterImg = document.getElementById('easter-img'); const images = { fries: 'fries.png', burger: 'burger.png' }; document.querySelectorAll('.food-trigger').forEach(el => { el.addEventListener('click', () => { const type = el.dataset.food; easterImg.src = images[type]; easter.classList.add('show'); setTimeout(() => { easter.classList.remove('show'); }, 1000); }); }); </script>
 
 
 
@@ -137,6 +139,7 @@ onSnapshot(bioRef, snap => {
 </body>
 
 </html>
+
 
 
 
