@@ -80,16 +80,21 @@
 const startScreen = document.getElementById('start-screen');
 const bgVideo = document.getElementById('bg-video');
 
-startScreen.addEventListener('click', async () => {
-    try {
+function startExperience() {
+    bgVideo.muted = true;
+    bgVideo.volume = 0.6;
+
+    bgVideo.play().then(() => {
         bgVideo.muted = false;
-        bgVideo.volume = 0.6;
-        await bgVideo.play();
-    } catch (e) {
+    }).catch(e => {
         console.log('Playback blocked', e);
-    }
+    });
+
     startScreen.classList.add('hidden');
-}, { once: true });
+}
+
+startScreen.addEventListener('click', startExperience, { once: true });
+startScreen.addEventListener('touchstart', startExperience, { once: true });
 
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
@@ -151,3 +156,4 @@ onSnapshot(bioRef, snap => {
 
 </body>
 </html>
+
