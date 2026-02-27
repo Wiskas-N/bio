@@ -10,7 +10,7 @@
 <body>
 
 <div class="background">
-    <video id="bg-video" class="bg-video" autoplay loop playsinline>
+    <video id="bg-video" class="bg-video" loop playsinline>
         <source src="background.mp4" type="video/mp4">
     </video>
 </div>
@@ -75,10 +75,11 @@ const bgVideo = document.getElementById('bg-video');
 
 startScreen.addEventListener('click', async () => {
     try {
+        bgVideo.muted = false;
         bgVideo.volume = 0.6;
         await bgVideo.play();
     } catch (e) {
-        console.log("Playback blocked", e);
+        console.log('Playback blocked', e);
     }
 
     startScreen.classList.add('hidden');
@@ -98,6 +99,7 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 </script>
+
 
 
 <script type="module">
@@ -135,3 +137,4 @@ onSnapshot(bioRef, snap => {
 </body>
 
 </html>
+
