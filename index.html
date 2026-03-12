@@ -1,95 +1,139 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>чипсики</title>
 
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>чипсики</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="styles.css">
 
 </head>
+
 <body>
-<div class="custom-cursor"></div>
-<div id="start-screen">
-<div class="start-title">Tap to enter</div>
-</div>
 
-<video id="bg-video" class="bg-video" loop playsinline muted preload="none">
-<source src="background.mp4" type="video/mp4">
-</video>
+  <div class="cursor"></div>
+
+  <div id="start-screen" class="start">
+    <div class="start__title">Tap to enter</div>
+  </div>
+
+  <video id="bg-video" class="bg-video" loop playsinline muted preload="none">
+    <source src="background.mp4" type="video/mp4">
+  </video>
+
+  <main class="profile">
+
+    <div class="profile__avatar">
+      <video class="profile__avatar-video" autoplay muted loop playsinline>
+        <source src="avatar.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <h1 class="profile__name">Вискас</h1>
+
+    <div class="profile__username">@wiskas_vn</div>
+
+    <div class="profile__badges">
+      <i class="fa-solid fa-laptop-code"></i>
+      <i class="fa-solid fa-code"></i>
+    </div>
+
+    <div class="profile__info">
+
+      <p class="profile__info-item">
+        ТГК Soup Visuals -
+        <a href="https://t.me/soupvisuals">t.me/soupvisuals</a>
+      </p>
+
+      <p class="profile__info-item">
+        ТГК Rival Visuals -
+        <a href="https://t.me/rivalvisual">t.me/rivalvisual</a>
+      </p>
+
+    </div>
+
+    <div class="profile__divider"></div>
+
+    <div class="profile__social">
+
+      <a class="profile__social-link" href="https://discord.com/users/123456789012345678">
+        <i class="fa-brands fa-discord"></i>
+      </a>
+
+      <a class="profile__social-link" href="https://t.me/wiskas_vn">
+        <i class="fa-brands fa-telegram"></i>
+      </a>
+
+    </div>
+
+  </main>
+
+  <script>
+
+const cursor = document.querySelector(".cursor")
+const startScreen = document.getElementById("start-screen")
+const bgVideo = document.getElementById("bg-video")
+const profile = document.querySelector(".profile")
+
+const isTouchDevice =
+  "ontouchstart" in window ||
+  navigator.maxTouchPoints > 0
 
 
+function startExperience() {
 
-<div class="card">
+  if (bgVideo) {
+    bgVideo.muted = true
 
-<div class="avatar">
-<video class="avatar-video" autoplay muted loop playsinline>
-<source src="avatar.mp4" type="video/mp4">
-</video>
-</div>
+    bgVideo.play().then(() => {
+      bgVideo.muted = false
+    }).catch(() => {})
+  }
 
-<div class="name">Wiskas</div>
-<div class="username">@wiskas_vn</div>
+  startScreen.classList.add("start--hidden")
 
-<div class="badges">
-<i class="fa-solid fa-laptop-code"></i>
-<i class="fa-solid fa-code"></i>
-</div>
+  setTimeout(() => {
+    profile.classList.add("profile--visible")
+  }, 300)
 
-<div class="info">
-<p>14 y.o developer</p>
-<p>frontend & design</p>
-</div>
-
-<div class="social">
-<a href="https://discord.com/users/123456789012345678"><i class="fa-brands fa-discord"></i></a>
-<a href="https://t.me/wiskas_vn"><i class="fa-brands fa-telegram"></i></a>
-</div>
-
-<div class="location">
-<i class="fa-solid fa-location-dot"></i>
-vietnam
-</div>
-
-</div>
-
-<script>
-
-const startScreen = document.getElementById("start-screen");
-const bgVideo = document.getElementById("bg-video");
-
-function startExperience(){
-
-if(bgVideo){
-bgVideo.muted = true;
-bgVideo.volume = 0.6;
-
-bgVideo.play().then(()=>{
-bgVideo.muted = false;
-}).catch(()=>{
-console.log("Playback blocked");
-});
 }
 
-startScreen.classList.add("hidden");
+startScreen.addEventListener("click", startExperience, { once: true })
+startScreen.addEventListener("touchstart", startExperience, { once: true })
+
+
+
+if (!isTouchDevice) {
+
+  document.addEventListener("mousemove", e => {
+    cursor.style.left = e.clientX + "px"
+    cursor.style.top = e.clientY + "px"
+    cursor.style.opacity = "1"
+  })
+
+
+  document.addEventListener("mouseleave", () => {
+    cursor.style.opacity = "0"
+  })
+
+  document.addEventListener("mouseenter", () => {
+    cursor.style.opacity = "1"
+  })
+
+} else {
+
+
+  cursor.style.display = "none"
+  document.body.style.cursor = "auto"
 
 }
-
-startScreen.addEventListener("click", startExperience, {once:true});
-startScreen.addEventListener("touchstart", startExperience, {once:true});
-
-const cursor = document.querySelector(".custom-cursor");
-
-document.addEventListener("mousemove", (e)=>{
-cursor.style.left = e.clientX + "px";
-cursor.style.top = e.clientY + "px";
-});
 
 </script>
-
-
-
 
 </body>
 </html>
