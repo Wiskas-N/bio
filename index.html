@@ -22,6 +22,10 @@
     <div class="start__title">Tap to enter</div>
   </div>
 
+  <audio id="bg-audio" loop preload="none">
+    <source src="background.mp3" type="audio/mpeg">
+  </audio>
+
   <video id="bg-video" class="bg-video" loop playsinline muted preload="none">
     <source src="background.mp4" type="video/mp4">
   </video>
@@ -78,6 +82,7 @@
 const cursor = document.querySelector(".cursor")
 const startScreen = document.getElementById("start-screen")
 const bgVideo = document.getElementById("bg-video")
+const bgAudio = document.getElementById("bg-audio")
 const profile = document.querySelector(".profile")
 
 const isTouchDevice =
@@ -88,11 +93,11 @@ const isTouchDevice =
 function startExperience() {
 
   if (bgVideo) {
-    bgVideo.muted = true
+    bgVideo.play().catch(() => {})
+  }
 
-    bgVideo.play().then(() => {
-      bgVideo.muted = false
-    }).catch(() => {})
+  if (bgAudio) {
+    bgAudio.play().catch(() => {})
   }
 
   startScreen.classList.add("start--hidden")
@@ -116,7 +121,6 @@ if (!isTouchDevice) {
     cursor.style.opacity = "1"
   })
 
-
   document.addEventListener("mouseleave", () => {
     cursor.style.opacity = "0"
   })
@@ -127,13 +131,12 @@ if (!isTouchDevice) {
 
 } else {
 
-
   cursor.style.display = "none"
   document.body.style.cursor = "auto"
 
 }
 
-</script>
+  </script>
 
 </body>
 </html>
