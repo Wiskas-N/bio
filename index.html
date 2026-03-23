@@ -1,142 +1,156 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>чипсики</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
   <link rel="stylesheet" href="styles.css">
-
 </head>
-
 <body>
-
   <div class="cursor"></div>
-
   <div id="start-screen" class="start">
     <div class="start__title">Tap to enter</div>
   </div>
 
-  <audio id="bg-audio" loop preload="none">
+  <audio id="bg-audio" loop preload="auto">
+    <source src="background.ogg" type="audio/ogg">
     <source src="background.mp3" type="audio/mpeg">
+    <source src="background.wav" type="audio/wav">
   </audio>
 
-  <video id="bg-video" class="bg-video" loop playsinline muted preload="none">
+  <video id="bg-video" class="bg-video" loop playsinline muted preload="auto" webkit-playsinline x5-playsinline x5-video-player-type="h5">
+    <source src="background.webm" type="video/webm">
+    <source src="background.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
     <source src="background.mp4" type="video/mp4">
+    <source src="background.ogv" type="video/ogg">
   </video>
 
   <main class="profile">
-
     <div class="profile__avatar">
-      <video class="profile__avatar-video" autoplay muted loop playsinline>
+      <video class="profile__avatar-video" autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="auto">
+        <source src="avatar.webm" type="video/webm">
+        <source src="avatar.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
         <source src="avatar.mp4" type="video/mp4">
       </video>
     </div>
-
     <h1 class="profile__name">Вискас</h1>
-
     <div class="profile__username">@wiskas_vn</div>
-
     <div class="profile__badges">
       <i class="fa-solid fa-laptop-code"></i>
       <i class="fa-solid fa-code"></i>
     </div>
-
     <div class="profile__info">
-
       <p class="profile__info-item">
         ТГК Soup Visuals -
         <a href="https://t.me/soupvisuals">t.me/soupvisuals</a>
       </p>
-
       <p class="profile__info-item">
         ТГК Rival Visuals -
         <a href="https://t.me/rivalvisual">t.me/rivalvisual</a>
       </p>
-
     </div>
-
     <div class="profile__divider"></div>
-
     <div class="profile__social">
-
       <a class="profile__social-link" href="https://discord.com/users/123456789012345678">
         <i class="fa-brands fa-discord"></i>
       </a>
-
       <a class="profile__social-link" href="https://t.me/wiskas_vn">
         <i class="fa-brands fa-telegram"></i>
       </a>
-
     </div>
-
   </main>
 
   <script>
+    const cursor = document.querySelector(".cursor")
+    const startScreen = document.getElementById("start-screen")
+    const bgVideo = document.getElementById("bg-video")
+    const bgAudio = document.getElementById("bg-audio")
+    const avatarVideo = document.querySelector(".profile__avatar-video")
+    const profile = document.querySelector(".profile")
 
-const cursor = document.querySelector(".cursor")
-const startScreen = document.getElementById("start-screen")
-const bgVideo = document.getElementById("bg-video")
-const bgAudio = document.getElementById("bg-audio")
-const profile = document.querySelector(".profile")
+    const isTouchDevice =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0
 
-const isTouchDevice =
-  "ontouchstart" in window ||
-  navigator.maxTouchPoints > 0
+    // Универсальный запуск медиа с повторными попытками
+    function tryPlay(media, retries = 3) {
+      if (!media) return Promise.resolve()
+      const attempt = () =>
+        media.play().catch(err => {
+          if (retries > 0) {
+            return new Promise(res => setTimeout(res, 300))
+              .then(() => tryPlay(media, retries - 1))
+          }
+        })
+      // Убедимся что медиа загружено
+      if (media.readyState < 2) {
+        return new Promise(resolve => {
+          const onReady = () => {
+            media.removeEventListener("canplay", onReady)
+            attempt().then(resolve)
+          }
+          media.addEventListener("canplay", onReady)
+          media.load()
+        })
+      }
+      return attempt()
+    }
 
+    function startExperience() {
+      // iOS Safari требует прямого вызова play() внутри user gesture
+      const videoPromise = tryPlay(bgVideo)
+      const audioPromise = tryPlay(bgAudio)
 
-function startExperience() {
+      // Авата-видео тоже запускаем на случай если autoplay не сработал
+      tryPlay(avatarVideo)
 
-  if (bgVideo) {
-    bgVideo.play().catch(() => {})
-  }
+      Promise.allSettled([videoPromise, audioPromise]).then(() => {
+        startScreen.classList.add("start--hidden")
+        setTimeout(() => {
+          profile.classList.add("profile--visible")
+        }, 300)
+      })
 
-  if (bgAudio) {
-    bgAudio.play().catch(() => {})
-  }
+      // Фоллбэк: показываем профиль даже если медиа не загрузилось
+      setTimeout(() => {
+        startScreen.classList.add("start--hidden")
+        setTimeout(() => profile.classList.add("profile--visible"), 300)
+      }, 2500)
+    }
 
-  startScreen.classList.add("start--hidden")
+    startScreen.addEventListener("click", startExperience, { once: true })
+    startScreen.addEventListener("touchstart", startExperience, {
+      once: true,
+      passive: true
+    })
 
-  setTimeout(() => {
-    profile.classList.add("profile--visible")
-  }, 300)
+    // Восстановление после сворачивания вкладки (особенно актуально на мобильных)
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        if (bgVideo && bgVideo.paused) bgVideo.play().catch(() => {})
+        if (bgAudio && bgAudio.paused) bgAudio.play().catch(() => {})
+        if (avatarVideo && avatarVideo.paused) avatarVideo.play().catch(() => {})
+      }
+    })
 
-}
-
-startScreen.addEventListener("click", startExperience, { once: true })
-startScreen.addEventListener("touchstart", startExperience, { once: true })
-
-
-
-if (!isTouchDevice) {
-
-  document.addEventListener("mousemove", e => {
-    cursor.style.left = e.clientX + "px"
-    cursor.style.top = e.clientY + "px"
-    cursor.style.opacity = "1"
-  })
-
-  document.addEventListener("mouseleave", () => {
-    cursor.style.opacity = "0"
-  })
-
-  document.addEventListener("mouseenter", () => {
-    cursor.style.opacity = "1"
-  })
-
-} else {
-
-  cursor.style.display = "none"
-  document.body.style.cursor = "auto"
-
-}
-
+    // Кастомный курсор только на десктопе
+    if (!isTouchDevice) {
+      document.addEventListener("mousemove", e => {
+        cursor.style.left = e.clientX + "px"
+        cursor.style.top = e.clientY + "px"
+        cursor.style.opacity = "1"
+      })
+      document.addEventListener("mouseleave", () => {
+        cursor.style.opacity = "0"
+      })
+      document.addEventListener("mouseenter", () => {
+        cursor.style.opacity = "1"
+      })
+    } else {
+      cursor.style.display = "none"
+      document.body.style.cursor = "auto"
+    }
   </script>
-
 </body>
 </html>
