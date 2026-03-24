@@ -101,9 +101,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 0 15px rgba(255,255,255,.7),
-    0 0 40px rgba(255,255,255,.5);
+  transition: box-shadow .6s ease;
 }
 
 .profile__avatar-video {
@@ -122,7 +120,7 @@ body {
   height: 16px;
   border-radius: 50%;
   background: #747f8d;
-  border: 2px solid #000;
+  border: 0px solid #000;
   transition: background .3s, box-shadow .3s;
   z-index: 2;
 }
@@ -333,7 +331,7 @@ body {
   border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(29,185,84,.35);
+  transition: box-shadow .6s ease;
 }
 
 .presence__spotify-info {

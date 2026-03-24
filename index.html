@@ -102,6 +102,7 @@
       const videoPromise = tryPlay(bgVideo)
       const audioPromise = tryPlay(bgAudio)
       tryPlay(avatarVideo)
+      applyAvatarGlow(avatarVideo)
       Promise.allSettled([videoPromise, audioPromise]).then(() => {
         startScreen.classList.add("start--hidden")
         setTimeout(() => profile.classList.add("profile--visible"), 300)
@@ -156,18 +157,131 @@
       ws.onclose = () => { clearInterval(hb); setTimeout(connectLanyard, 3000) }
       ws.onerror = () => ws.close()
     }
+    let spotifyInterval = null
 
+    function startSpotifyProgress(timestamps) {
+      if (spotifyInterval) clearInterval(spotifyInterval)
+
+      spotifyInterval = setInterval(() => {
+        const bar = document.querySelector(".presence__bar-fill")
+        if (!bar || !timestamps?.start || !timestamps?.end) return
+
+        const pct = Math.min(100, Math.max(0,
+          (Date.now() - timestamps.start) / (timestamps.end - timestamps.start) * 100
+        ))
+
+        bar.style.width = pct + "%"
+
+        if (pct >= 100) clearInterval(spotifyInterval)
+      }, 1000)
+    }
     function x(s) {
       return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")
     }
+    function applyAlbumGlow(imgEl) {
+      const canvas = document.createElement("canvas")
+      const SIZE = 12
+      canvas.width = SIZE
+      canvas.height = SIZE
+      const ctx = canvas.getContext("2d")
 
+      const img = new Image()
+      img.crossOrigin = "anonymous"
+      img.src = imgEl.src
+
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, SIZE, SIZE)
+
+        const data = ctx.getImageData(0, 0, SIZE, SIZE).data
+        let r = 0, g = 0, b = 0, count = 0
+
+        const addPixel = (x, y) => {
+          const i = (y * SIZE + x) * 4
+          r += data[i]; g += data[i+1]; b += data[i+2]
+          count++
+        }
+
+        for (let i = 0; i < SIZE; i++) {
+          addPixel(i, 0)
+          addPixel(i, SIZE - 1)
+          addPixel(0, i)
+          addPixel(SIZE - 1, i)
+        }
+
+        r = Math.round(r / count)
+        g = Math.round(g / count)
+        b = Math.round(b / count)
+
+        imgEl.style.boxShadow = `
+          0 0 10px rgba(${r},${g},${b},0.7),
+          0 0 22px rgba(${r},${g},${b},0.5),
+          0 0 40px rgba(${r},${g},${b},0.3)
+        `
+      }
+
+      img.onerror = () => {
+        imgEl.style.boxShadow = "0 0 12px rgba(29,185,84,.35)"
+      }
+    }
+    function applyAvatarGlow(videoEl) {
+      const canvas = document.createElement("canvas")
+      const SIZE = 16
+      canvas.width = SIZE
+      canvas.height = SIZE
+      const ctx = canvas.getContext("2d")
+
+      const sample = () => {
+        try {
+          ctx.drawImage(videoEl, 0, 0, SIZE, SIZE)
+          const data = ctx.getImageData(0, 0, SIZE, SIZE).data
+          let r = 0, g = 0, b = 0, count = 0
+
+          const addPixel = (x, y) => {
+            const i = (y * SIZE + x) * 4
+            // пропускаем прозрачные/чёрные пиксели
+            if (data[i+3] < 10) return
+            if (data[i] < 8 && data[i+1] < 8 && data[i+2] < 8) return
+            r += data[i]; g += data[i+1]; b += data[i+2]
+            count++
+          }
+
+          for (let i = 0; i < SIZE; i++) {
+            addPixel(i, 0)
+            addPixel(i, SIZE - 1)
+            addPixel(0, i)
+            addPixel(SIZE - 1, i)
+          }
+
+          if (count === 0) return
+
+          r = Math.round(r / count)
+          g = Math.round(g / count)
+          b = Math.round(b / count)
+
+          document.querySelector(".profile__avatar").style.boxShadow = `
+            0 0 15px rgba(${r},${g},${b},0.8),
+            0 0 35px rgba(${r},${g},${b},0.55),
+            0 0 60px rgba(${r},${g},${b},0.3)
+          `
+        } catch(e) {}
+      }
+
+      // Сэмплируем каждые 500ms пока видео играет — цвет меняется с кадрами
+      if (videoEl.readyState >= 2) sample()
+      videoEl.addEventListener("play", () => {
+        sample()
+        setInterval(sample, 500)
+      }, { once: true })
+
+      setInterval(sample, 500)
+}
     function render(data) {
       const sk = data.discord_status || "offline"
       const s  = S[sk] || S.offline
 
       const dot = document.getElementById("status-dot")
       dot.style.background = s.color
-      dot.style.boxShadow  = `0 0 0 2px #000, 0 0 8px ${s.glow}, 0 0 16px ${s.glow}`
+      dot.style.boxShadow  = `0 0 0 0px #000, 0 0 8px ${s.glow}, 0 0 16px ${s.glow}`
 
       const pdot = document.getElementById("presence-dot")
       pdot.style.background = s.color
@@ -218,8 +332,13 @@
       }
 
       document.getElementById("presence-body").innerHTML = html
+      if (data.listening_to_spotify && data.spotify) {
+        const artEl = document.querySelector(".presence__spotify-art")
+        if (artEl) applyAlbumGlow(artEl)
+        startSpotifyProgress(data.spotify.timestamps)
     }
-
+    }
+    
     connectLanyard()
   </script>
 </body>
