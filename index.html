@@ -2,125 +2,113 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>чипсики</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@900&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>wiskascg</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="cursor"></div>
+
   <div id="start-screen" class="start">
-    <div class="start__title">Tap to enter</div>
+    <div class="start__inner">
+      <p class="start__text">tap to enter</p>
+    </div>
   </div>
 
   <audio id="bg-audio" loop preload="auto">
     <source src="background.ogg" type="audio/ogg">
     <source src="background.mp3" type="audio/mpeg">
-    <source src="background.wav" type="audio/wav">
   </audio>
 
-  <video id="bg-video" class="bg-video" loop playsinline muted preload="auto" webkit-playsinline x5-playsinline x5-video-player-type="h5">
+  <video id="bg-video" class="bg-video" loop playsinline muted preload="auto" webkit-playsinline>
     <source src="background.webm" type="video/webm">
-    <source src="background.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
     <source src="background.mp4" type="video/mp4">
-    <source src="background.ogv" type="video/ogg">
   </video>
 
   <main class="profile">
-    <div class="profile__avatar">
-      <video class="profile__avatar-video" autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="auto">
-        <source src="avatar.webm" type="video/webm">
-        <source src="avatar.mp4" type="video/mp4; codecs=avc1.42E01E,mp4a.40.2">
-        <source src="avatar.mp4" type="video/mp4">
-      </video>
-      <div class="profile__status" id="status-dot"></div>
-    </div>
+    <div class="card">
+      <div class="card__glow"></div>
 
-    <h1 class="profile__name">Вискас</h1>
-    <a class="profile__username" href="https://t.me/wiskas_vn" target="_blank">@wiskas_vn</a>
-
-    <a class="presence" href="https://discord.com/users/1315927053559791637" target="_blank">
-      <div class="presence__header">
-        <i class="fa-brands fa-discord"></i>
-        <span>Discord</span>
-        <div class="presence__dot" id="presence-dot"></div>
-      </div>
-      <div class="presence__body" id="presence-body">
-        <div class="presence__loading">
-          <div class="presence__spinner"></div>
-          подключение...
+      <a class="presence" href="https://discord.com/users/1474075672526852158" target="_blank">
+        <div class="presence__top">
+          <div class="presence__av-wrap" id="av-wrap">
+            <img class="presence__av" id="discord-av" src="" alt="">
+            <span class="presence__status-dot" id="status-dot"></span>
+          </div>
+          <div class="presence__info">
+            <span class="presence__name" id="discord-name">wiskascg</span>
+            <span class="presence__tag" id="discord-tag">@wiskascg</span>
+            <span class="presence__label" id="presence-label">
+              <span class="presence__label-dot" id="label-dot"></span>offline
+            </span>
+          </div>
+          <div class="presence__badge">
+            <i class="fa-brands fa-discord"></i>
+          </div>
         </div>
-      </div>
-    </a>
-
-    <div class="tg-links">
-      <a class="tg-link" href="https://t.me/soupvisuals" target="_blank">
-        <div class="tg-link__header">
-          <i class="fa-brands fa-telegram tg-link__icon"></i>
-          <span class="tg-link__name">Soup Visuals</span>
-          <span class="tg-link__handle">t.me/soupvisuals</span>
-        </div>
+        <div class="presence__dynamic" id="presence-dynamic"></div>
       </a>
-      <a class="tg-link" href="https://t.me/rivalvisual" target="_blank">
-        <div class="tg-link__header">
-          <i class="fa-brands fa-telegram tg-link__icon"></i>
-          <span class="tg-link__name">Rival Visuals</span>
-          <span class="tg-link__handle">t.me/rivalvisual</span>
+
+      <div class="divider"></div>
+
+      <a class="tg-btn" href="https://t.me/wiskascg" target="_blank">
+        <div class="tg-btn__left">
+          <div class="tg-btn__icon">
+            <i class="fa-brands fa-telegram"></i>
+          </div>
+          <div class="tg-btn__text">
+            <span class="tg-btn__label">Telegram</span>
+            <span class="tg-btn__handle">@wiskascg</span>
+          </div>
+        </div>
+        <div class="tg-btn__arrow">
+          <i class="fa-solid fa-arrow-right"></i>
         </div>
       </a>
     </div>
   </main>
 
   <script>
-    const DISCORD_ID = "1315927053559791637"
+    const DISCORD_ID = "1474075672526852158"
 
     const cursor      = document.querySelector(".cursor")
     const startScreen = document.getElementById("start-screen")
     const bgVideo     = document.getElementById("bg-video")
     const bgAudio     = document.getElementById("bg-audio")
-    const avatarVideo = document.querySelector(".profile__avatar-video")
     const profile     = document.querySelector(".profile")
     const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0
 
     function tryPlay(media, retries = 3) {
       if (!media) return Promise.resolve()
       const attempt = () => media.play().catch(() => {
-        if (retries > 0) return new Promise(r => setTimeout(r, 300)).then(() => tryPlay(media, retries - 1))
+        if (retries > 0) return new Promise(r => setTimeout(r, 300)).then(() => tryPlay(media, retries-1))
       })
       if (media.readyState < 2) {
         return new Promise(resolve => {
           const onReady = () => { media.removeEventListener("canplay", onReady); attempt().then(resolve) }
-          media.addEventListener("canplay", onReady)
-          media.load()
+          media.addEventListener("canplay", onReady); media.load()
         })
       }
       return attempt()
     }
 
     function startExperience() {
-      const videoPromise = tryPlay(bgVideo)
-      const audioPromise = tryPlay(bgAudio)
-      tryPlay(avatarVideo)
-      applyAvatarGlow(avatarVideo)
-      Promise.allSettled([videoPromise, audioPromise]).then(() => {
-        startScreen.classList.add("start--hidden")
-        setTimeout(() => profile.classList.add("profile--visible"), 300)
-      })
-      setTimeout(() => {
-        startScreen.classList.add("start--hidden")
-        setTimeout(() => profile.classList.add("profile--visible"), 300)
-      }, 2500)
+      bgAudio.volume = 0.08
+      tryPlay(bgVideo); tryPlay(bgAudio)
+      startScreen.classList.add("start--hidden")
+      setTimeout(() => profile.classList.add("profile--visible"), 250)
     }
 
-    startScreen.addEventListener("click", startExperience, { once: true })
+    startScreen.addEventListener("click",      startExperience, { once: true })
     startScreen.addEventListener("touchstart", startExperience, { once: true, passive: true })
+    setTimeout(startExperience, 3500)
 
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
         if (bgVideo && bgVideo.paused) bgVideo.play().catch(() => {})
         if (bgAudio && bgAudio.paused) bgAudio.play().catch(() => {})
-        if (avatarVideo && avatarVideo.paused) avatarVideo.play().catch(() => {})
       }
     })
 
@@ -131,19 +119,17 @@
         cursor.style.opacity = "1"
       })
       document.addEventListener("mouseleave", () => cursor.style.opacity = "0")
-      document.addEventListener("mouseenter", () => cursor.style.opacity = "1")
     } else {
       cursor.style.display = "none"
       document.body.style.cursor = "auto"
     }
 
     const S = {
-      online:  { color: "#3ba55c", glow: "rgba(59,165,92,.7)",   label: "Online" },
-      idle:    { color: "#faa81a", glow: "rgba(250,168,26,.7)",  label: "Idle" },
-      dnd:     { color: "#ed4245", glow: "rgba(237,66,69,.7)",   label: "DND" },
-      offline: { color: "#747f8d", glow: "rgba(116,127,141,.4)", label: "Offline" }
+      online:  { color: "#23a55a", glow: "rgba(35,165,90,.8)",   label: "Online" },
+      idle:    { color: "#f0b232", glow: "rgba(240,178,50,.8)",   label: "Idle" },
+      dnd:     { color: "#f23f43", glow: "rgba(242,63,67,.8)",    label: "Do Not Disturb" },
+      offline: { color: "#80848e", glow: "rgba(128,132,142,.5)",  label: "Offline" }
     }
-
     let hb = null
 
     function connectLanyard() {
@@ -157,188 +143,124 @@
       ws.onclose = () => { clearInterval(hb); setTimeout(connectLanyard, 3000) }
       ws.onerror = () => ws.close()
     }
-    let spotifyInterval = null
 
+    let spotifyInterval = null
     function startSpotifyProgress(timestamps) {
       if (spotifyInterval) clearInterval(spotifyInterval)
-
       spotifyInterval = setInterval(() => {
-        const bar = document.querySelector(".presence__bar-fill")
+        const bar = document.querySelector(".spotify__bar-fill")
         if (!bar || !timestamps?.start || !timestamps?.end) return
-
-        const pct = Math.min(100, Math.max(0,
-          (Date.now() - timestamps.start) / (timestamps.end - timestamps.start) * 100
-        ))
-
+        const pct = Math.min(100, Math.max(0, (Date.now()-timestamps.start)/(timestamps.end-timestamps.start)*100))
         bar.style.width = pct + "%"
-
         if (pct >= 100) clearInterval(spotifyInterval)
       }, 1000)
     }
-    function x(s) {
-      return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")
-    }
-    function applyAlbumGlow(imgEl) {
-      const canvas = document.createElement("canvas")
-      const SIZE = 12
-      canvas.width = SIZE
-      canvas.height = SIZE
+
+    function x(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;") }
+
+    function sampleGlow(imgSrc, applyFn) {
+      const canvas = document.createElement("canvas"); const SZ = 16
+      canvas.width = SZ; canvas.height = SZ
       const ctx = canvas.getContext("2d")
-
-      const img = new Image()
-      img.crossOrigin = "anonymous"
-      img.src = imgEl.src
-
+      const img = new Image(); img.crossOrigin = "anonymous"; img.src = imgSrc
       img.onload = () => {
-        ctx.drawImage(img, 0, 0, SIZE, SIZE)
-
-        const data = ctx.getImageData(0, 0, SIZE, SIZE).data
-        let r = 0, g = 0, b = 0, count = 0
-
-        const addPixel = (x, y) => {
-          const i = (y * SIZE + x) * 4
-          r += data[i]; g += data[i+1]; b += data[i+2]
-          count++
+        ctx.drawImage(img, 0, 0, SZ, SZ)
+        const d = ctx.getImageData(0,0,SZ,SZ).data
+        let r=0,g=0,b=0,n=0
+        for(let i=0;i<SZ;i++){
+          const add=(px,py)=>{const idx=(py*SZ+px)*4;if(d[idx+3]<10)return;r+=d[idx];g+=d[idx+1];b+=d[idx+2];n++}
+          add(i,0);add(i,SZ-1);add(0,i);add(SZ-1,i)
         }
-
-        for (let i = 0; i < SIZE; i++) {
-          addPixel(i, 0)
-          addPixel(i, SIZE - 1)
-          addPixel(0, i)
-          addPixel(SIZE - 1, i)
-        }
-
-        r = Math.round(r / count)
-        g = Math.round(g / count)
-        b = Math.round(b / count)
-
-        imgEl.style.boxShadow = `
-          0 0 10px rgba(${r},${g},${b},0.7),
-          0 0 22px rgba(${r},${g},${b},0.5),
-          0 0 40px rgba(${r},${g},${b},0.3)
-        `
-      }
-
-      img.onerror = () => {
-        imgEl.style.boxShadow = "0 0 12px rgba(29,185,84,.35)"
+        if(!n)return
+        applyFn(Math.round(r/n),Math.round(g/n),Math.round(b/n))
       }
     }
-    function applyAvatarGlow(videoEl) {
-      const canvas = document.createElement("canvas")
-      const SIZE = 16
-      canvas.width = SIZE
-      canvas.height = SIZE
-      const ctx = canvas.getContext("2d")
 
-      const sample = () => {
-        try {
-          ctx.drawImage(videoEl, 0, 0, SIZE, SIZE)
-          const data = ctx.getImageData(0, 0, SIZE, SIZE).data
-          let r = 0, g = 0, b = 0, count = 0
-
-          const addPixel = (x, y) => {
-            const i = (y * SIZE + x) * 4
-            // пропускаем прозрачные/чёрные пиксели
-            if (data[i+3] < 10) return
-            if (data[i] < 8 && data[i+1] < 8 && data[i+2] < 8) return
-            r += data[i]; g += data[i+1]; b += data[i+2]
-            count++
-          }
-
-          for (let i = 0; i < SIZE; i++) {
-            addPixel(i, 0)
-            addPixel(i, SIZE - 1)
-            addPixel(0, i)
-            addPixel(SIZE - 1, i)
-          }
-
-          if (count === 0) return
-
-          r = Math.round(r / count)
-          g = Math.round(g / count)
-          b = Math.round(b / count)
-
-          document.querySelector(".profile__avatar").style.boxShadow = `
-            0 0 15px rgba(${r},${g},${b},0.8),
-            0 0 35px rgba(${r},${g},${b},0.55),
-            0 0 60px rgba(${r},${g},${b},0.3)
-          `
-        } catch(e) {}
-      }
-
-      // Сэмплируем каждые 500ms пока видео играет — цвет меняется с кадрами
-      if (videoEl.readyState >= 2) sample()
-      videoEl.addEventListener("play", () => {
-        sample()
-        setInterval(sample, 500)
-      }, { once: true })
-
-      setInterval(sample, 500)
-}
     function render(data) {
       const sk = data.discord_status || "offline"
       const s  = S[sk] || S.offline
 
       const dot = document.getElementById("status-dot")
-      dot.style.background = s.color
-      dot.style.boxShadow  = `0 0 0 0px #000, 0 0 8px ${s.glow}, 0 0 16px ${s.glow}`
+      dot.style.background  = s.color
+      dot.style.boxShadow   = `0 0 0 3px #1e1f22, 0 0 10px ${s.glow}`
 
-      const pdot = document.getElementById("presence-dot")
-      pdot.style.background = s.color
-      pdot.style.boxShadow  = `0 0 6px ${s.glow}, 0 0 14px ${s.glow}`
+      const labelDot = document.getElementById("label-dot")
+      labelDot.style.background = s.color
+      labelDot.style.boxShadow  = `0 0 6px ${s.glow}`
+      document.getElementById("presence-label").lastChild.textContent = s.label
 
-      const u = data.discord_user
+      const u  = data.discord_user
       const av = u.avatar
-        ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith("a_")?"gif":"png"}?size=80`
+        ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith("a_")?"gif":"png"}?size=160`
         : `https://cdn.discordapp.com/embed/avatars/0.png`
 
-      let html = `
-        <div class="presence__user">
-          <img class="presence__user-av" src="${x(av)}" alt="">
-          <div class="presence__user-info">
-            <span class="presence__user-name">${x(u.global_name || u.username)}</span>
-            <span class="presence__user-status" style="color:${s.color};text-shadow:0 0 8px ${s.glow}">● ${s.label}</span>
-          </div>
-        </div>`
+      const avEl = document.getElementById("discord-av")
+      if (avEl.src !== av) {
+        avEl.src = av
+        sampleGlow(av, (r,g,b) => {
+          document.getElementById("av-wrap").style.boxShadow =
+            `0 0 0 2px rgba(${r},${g},${b},.4), 0 0 20px rgba(${r},${g},${b},.5), 0 0 45px rgba(${r},${g},${b},.2)`
+          document.querySelector(".card__glow").style.background =
+            `radial-gradient(ellipse at 30% 0%, rgba(${r},${g},${b},.18) 0%, transparent 70%)`
+        })
+      }
+
+      document.getElementById("discord-name").textContent = u.global_name || u.username
+      document.getElementById("discord-tag").textContent  = "@" + u.username
+
+      let dynHtml = ""
 
       if (data.listening_to_spotify && data.spotify) {
-        const sp = data.spotify
+        const sp  = data.spotify
         const pct = (() => {
           const ts = sp.timestamps
           if (!ts?.start || !ts?.end) return 0
-          return Math.min(100, Math.max(0, (Date.now() - ts.start) / (ts.end - ts.start) * 100))
+          return Math.min(100, Math.max(0, (Date.now()-ts.start)/(ts.end-ts.start)*100))
         })()
-        html += `
-          <div class="presence__spotify">
-            <img class="presence__spotify-art" src="${x(sp.album_art_url)}" alt="">
-            <div class="presence__spotify-info">
-              <div class="presence__spotify-badge"><i class="fa-brands fa-spotify"></i> Spotify</div>
-              <div class="presence__spotify-song">${x(sp.song)}</div>
-              <div class="presence__spotify-artist">${x(sp.artist)}</div>
-              <div class="presence__bar"><div class="presence__bar-fill" style="width:${pct}%"></div></div>
+        dynHtml += `
+          <div class="spotify">
+            <img class="spotify__art" id="spotify-art" src="${x(sp.album_art_url)}" alt="">
+            <div class="spotify__info">
+              <div class="spotify__badge"><i class="fa-brands fa-spotify"></i> Listening on Spotify</div>
+              <div class="spotify__song">${x(sp.song)}</div>
+              <div class="spotify__artist">${x(sp.artist)}</div>
+              <div class="spotify__bar"><div class="spotify__bar-fill" style="width:${pct}%"></div></div>
             </div>
           </div>`
       }
 
       if (data.activities?.length) {
         const act = data.activities.find(a => a.type === 0 || a.type === 1)
-        if (act) html += `
-          <div class="presence__activity">
-            <div class="presence__activity-playing">Playing</div>
-            <div class="presence__activity-name">${x(act.name)}</div>
-            ${act.details ? `<div class="presence__activity-detail">${x(act.details)}</div>` : ""}
-            ${act.state   ? `<div class="presence__activity-state">${x(act.state)}</div>`   : ""}
-          </div>`
+        if (act) {
+          const appIcon = act.application_id
+            ? `https://cdn.discordapp.com/app-icons/${act.application_id}/${act.assets?.large_image}.png?size=64`
+            : null
+          dynHtml += `
+            <div class="activity">
+              ${appIcon ? `<img class="activity__icon" src="${x(appIcon)}" alt="" onerror="this.style.display='none'">` : `<div class="activity__icon activity__icon--fallback"><i class="fa-solid fa-gamepad"></i></div>`}
+              <div class="activity__info">
+                <div class="activity__playing">Playing a game</div>
+                <div class="activity__name">${x(act.name)}</div>
+                ${act.details ? `<div class="activity__detail">${x(act.details)}</div>` : ""}
+                ${act.state   ? `<div class="activity__state">${x(act.state)}</div>`   : ""}
+              </div>
+            </div>`
+        }
       }
 
-      document.getElementById("presence-body").innerHTML = html
+      const dynEl = document.getElementById("presence-dynamic")
+      dynEl.innerHTML = dynHtml
+      dynEl.style.display = dynHtml ? "flex" : "none"
+
       if (data.listening_to_spotify && data.spotify) {
-        const artEl = document.querySelector(".presence__spotify-art")
-        if (artEl) applyAlbumGlow(artEl)
+        const artEl = document.getElementById("spotify-art")
+        if (artEl) sampleGlow(artEl.src, (r,g,b) => {
+          artEl.style.boxShadow = `0 0 12px rgba(${r},${g},${b},.7), 0 0 28px rgba(${r},${g},${b},.4)`
+        })
         startSpotifyProgress(data.spotify.timestamps)
+      }
     }
-    }
-    
+
     connectLanyard()
   </script>
 </body>
